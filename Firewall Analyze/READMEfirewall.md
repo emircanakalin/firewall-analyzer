@@ -1,42 +1,57 @@
 # Firewall Analyzer
 
-A PowerShell script to analyze "Allow" rules in the Windows Defender Firewall and identify potentially suspicious applications.
-
 ## Description
 
-This script scans all enabled "Allow" rules in the Windows Defender Firewall. For each rule associated with an application, it retrieves the application's file path, digital signature status, and publisher information. 
+This PowerShell script analyzes the "Allow" rules in Windows Defender Firewall to identify and list potentially suspicious applications. It is designed to help system administrators and security-conscious users detect unauthorized or untrustworthy applications that have been granted network access.
 
-The primary goal is to flag applications that might pose a security risk, based on the following criteria:
-- **Unsigned Applications:** Executables that lack a digital signature.
-- **Unusual Locations:** Applications running from temporary or user-specific folders like `AppData` or `Temp`.
-- **Non-Microsoft Publishers:** To help distinguish between operating system components and third-party software.
+### Key Features:
+- **Automatic Administrator Elevation**: The script automatically requests administrator privileges if not already running with them.
+- **Signature Verification**: Checks if an application is digitally signed and displays the publisher's information.
+- **Path Analysis**: Identifies applications running from unusual locations, such as temporary (`Temp`) or user-specific (`AppData`) folders.
+- **Publisher Filtering**: Flags applications from non-Microsoft publishers for closer inspection.
+- **Clear Reporting**: Presents the findings in a clean, easy-to-read table, sorted to highlight the most suspicious entries.
+- **CSV Export**: Allows exporting the analysis results to a CSV file for further analysis.
 
-## Features
+---
 
-- **Automatic Administrator Elevation:** The script will automatically try to restart itself with administrator privileges if it's not run as an admin.
-- **Clear Table-Based Output:** Results are displayed in a clean, easy-to-read table.
-- **Prioritized Results:** Potentially suspicious applications (those with notes) are listed at the top for immediate attention.
+## Açıklama
 
-## How to Use
+Bu PowerShell betiği, potansiyel olarak şüpheli uygulamaları belirlemek ve listelemek için Windows Defender Güvenlik Duvarı'ndaki "İzin Ver" kurallarını analiz eder. Sistem yöneticilerinin ve güvenliğe duyarlı kullanıcıların, ağ erişimi verilmiş yetkisiz veya güvenilir olmayan uygulamaları tespit etmelerine yardımcı olmak için tasarlanmıştır.
 
-1.  Open a PowerShell terminal.
-2.  Navigate to the directory where `Firewall-Analyzer.ps1` is located.
-3.  Run the script:
+### Öne Çıkan Özellikler:
+- **Otomatik Yönetici Yükseltme**: Betik, yönetici olarak çalışmıyorsa otomatik olarak yönetici ayrıcalıkları ister.
+- **İmza Doğrulaması**: Bir uygulamanın dijital olarak imzalanıp imzalanmadığını kontrol eder ve yayıncı bilgilerini gösterir.
+- **Yol Analizi**: Geçici (`Temp`) veya kullanıcıya özgü (`AppData`) klasörler gibi olağandışı konumlardan çalışan uygulamaları tanımlar.
+- **Yayıncı Filtreleme**: Microsoft dışındaki yayıncılara ait uygulamaları daha yakından incelenmesi için işaretler.
+- **Anlaşılır Raporlama**: Bulguları, en şüpheli girişleri vurgulayacak şekilde sıralanmış, temiz ve okunması kolay bir tabloda sunar.
+- **CSV Dışa Aktarma**: Analiz sonuçlarını daha fazla analiz için bir CSV dosyasına aktarmaya olanak tanır.
+
+## Usage / Kullanım
+
+1.  Save the script as a `.ps1` file (e.g., `Firewall-Analyzer.ps1`).
+2.  Open PowerShell.
+3.  Navigate to the directory where you saved the script.
+4.  Run the script with the following command:
     ```powershell
     .\Firewall-Analyzer.ps1
     ```
-4.  If not already running as an administrator, the script will prompt for elevation.
-5.  Review the output table for a list of applications associated with "Allow" rules.
+The script will automatically request administrator rights and display the analysis results in the console.
 
-## Output Columns
+To export the results to a CSV file, use the `-ExportPath` parameter:
+```powershell
+.\Firewall-Analyzer.ps1 -ExportPath "C:\path\to\your\results.csv"
+```
 
-- **ApplicationName:** The file description of the application, or its filename if the description is not available.
-- **IsSigned:** `True` if the application has a valid digital signature, `False` otherwise.
-- **Signer:** The name of the certificate authority that signed the application. Shows "Unsigned" if not signed.
-- **Path:** The full file path to the application's executable.
-- **Notes:** Highlights potential issues, such as being unsigned or located in a temporary folder.
-- **RuleName:** The display name of the firewall rule that allows the application.
+1.  Betiği bir `.ps1` dosyası olarak kaydedin (ör. `Firewall-Analyzer.ps1`).
+2.  PowerShell'i açın.
+3.  Betiği kaydettiğiniz dizine gidin.
+4.  Betiği aşağıdaki komutla çalıştırın:
+    ```powershell
+    .\Firewall-Analyzer.ps1
+    ```
+Betik, otomatik olarak yönetici hakları isteyecek ve analiz sonuçlarını konsolda gösterecektir.
 
-## Disclaimer
-
-This script is not an antivirus or anti-malware tool. It is intended as a diagnostic helper to review your firewall configuration and identify potential anomalies that may warrant further investigation.
+Sonuçları bir CSV dosyasına aktarmak için `-ExportPath` parametresini kullanın:
+```powershell
+.\Firewall-Analyzer.ps1 -ExportPath "C:\path\to\your\results.csv"
+```
